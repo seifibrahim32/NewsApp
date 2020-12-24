@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+    android:background="#D7C5C5"
     android:paddingBottom="14dp">
 
     <androidx.cardview.widget.CardView
@@ -16,26 +17,27 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
+                android:src="#FFFFFF"
                 android:layout_height="180dp"
-                android:src="#FFFFFF" />
-
-            <ImageView
-                android:id="@+id/shadow"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignBottom="@id/image"
-                android:background="@drawable/myrect" />
+                android:transitionName="image" />
 
             <ProgressBar
                 android:id="@+id/progress_load"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp" />
+
+            <ImageView
+                android:id="@+id/shadow"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_alignBottom="@id/image"
+                android:src="@drawable/myrect" />
 
             <TextView
                 android:id="@+id/author"
@@ -56,34 +58,37 @@
                 android:id="@+id/layoutDate"
                 android:layout_width="136dp"
                 android:layout_height="30dp"
-                android:layout_alignBottom="@id/shadow"
+                android:layout_alignTop="@id/shadow"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="6dp"
-                android:background="@drawable/ic_date">
+                android:layout_margin="7dp"
+                android:background="@drawable/round_white">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="4dp">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="4dp"
-                        android:src="@drawable/ic_launcher_background" />
+                        android:layout_marginTop="1dp"
+                        android:src="@drawable/ic_date" />
 
                     <TextView
                         android:id="@+id/publishedAt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
+                        android:layout_marginLeft="0dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginRight="4dp"
                         android:layout_marginBottom="4dp"
                         android:text="10 Nov 2000"
                         android:textColor="#530909"
-                        android:textSize="10dp" />
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
                 </LinearLayout>
             </FrameLayout>
 

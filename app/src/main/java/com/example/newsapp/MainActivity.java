@@ -36,11 +36,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     public static final String API_KEY = "fed9a9dac524473997a33eca63fc120a";
     public List<Article> articles = new ArrayList<>();
-    TextView textView;
+    private TextView textView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private Adapter adapter;
@@ -111,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     }
                     articles = response.body().getArticles();
                     adapter = new Adapter(articles, MainActivity.this);
-                    recyclerView.setAdapter(adapter);
                     initListener();
+                    recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                     textView.setVisibility(View.VISIBLE);
@@ -133,31 +132,28 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void initListener() {
-        adapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
+        adapter.onItemClickListener = (view, position) -> {
+            ImageView imageView = view.findViewById(R.id.image);
+            Intent intent = new Intent(MainActivity.this, NewsActivity.class);
 
-                ImageView imageView = findViewById(R.id.image);
-                Intent intent = new Intent(MainActivity.this, NewsActivity.class);
-                Article article = articles.get(position);
-                intent.putExtra("url", article.getUrl());
-                intent.putExtra("title", article.getTitle());
-                intent.putExtra("date", article.getPublishedAt());
-                intent.putExtra("img", article.getUrlToImage());
-                intent.putExtra("source", article.getSource().getName());
-                intent.putExtra("author", (Bundle) article.getAuthor());
-                Pair<View, String> pair = Pair.create((View)imageView, ViewCompat.getTransitionName(imageView));
-                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        MainActivity.this,  pair
-                );
- 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent, optionsCompat.toBundle());
-                }else {
-                    startActivity(intent);
-                }
+            Article article = articles.get(position);
+            intent.putExtra("url", article.getUrl());
+            intent.putExtra("title", article.getTitle());
+            intent.putExtra("img", article.getUrlToImage());
+            intent.putExtra("date", article.getPublishedAt());
+            intent.putExtra("source", article.getSource().getName());
+            intent.putExtra("author", (String) article.getAuthor());
+            Pair<View, String> pair = Pair.create(imageView, ViewCompat.getTransitionName(imageView));
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    MainActivity.this, pair);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                startActivity(intent, optionsCompat.toBundle());
+            } else {
+                startActivity(intent);
             }
-        });
+
+        };
     }
 
     @Override
@@ -167,12 +163,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void onLoadingSwipeRefresh(final String keyword) {
         swipeRefreshLayout.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        LoadJson(keyword);
-                    }
-                }
+                () -> LoadJson(keyword)
         );
     }
 }

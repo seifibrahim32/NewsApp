@@ -3,4 +3,11 @@
     <string name="search">Search</string>
     <string name="settings">Settings</string>
     <string name="top_headlines">Top Headlines</string>
+    <string name="news_for_you">News for you</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="title_of_news">Title of News</string>
+    <string name="_01_january_1990">01 January 1990</string>
+    <string name="a_time_ago">a time ago</string>
+    <string name="share">Share</string>
+    <string name="open_with_browser">Open with browser</string>
 </resources>

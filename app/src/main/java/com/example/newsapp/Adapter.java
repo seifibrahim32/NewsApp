@@ -28,58 +28,20 @@ import com.example.newsapp.models.Article;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
-    private List<Article> articles ;
-    private OnItemClickListener onItemClickListener;
+    public OnItemClickListeners onItemClickListener;
+    private List<Article> articles;
     private Context context;
 
-    public Adapter(List<Article> articles, Context context){
+    public Adapter(List<Article> articles, Context context) {
         this.articles = articles;
         this.context = context;
     }
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title,desc, author,published_ad,source,time;
-        ImageView imageView;
-        ProgressBar progressBar;
-        OnItemClickListener onItemClickListener;
-        public ViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
-            super(itemView);
-
-            itemView.setOnClickListener(this);
-            title = itemView.findViewById(R.id.title);
-
-            desc = itemView.findViewById(R.id.desc);
-
-            author = itemView.findViewById(R.id.author);
-
-            published_ad = itemView.findViewById(R.id.publishedAt);
-
-            source = itemView.findViewById(R.id.source);
-
-            time = itemView.findViewById(R.id.time);
-            imageView = itemView.findViewById(R.id.image);
-            progressBar = itemView.findViewById(R.id.progress_load);
-            this.onItemClickListener = onItemClickListener;
-        }
-
-        @Override
-        public void onClick(View v) {
-
-            onItemClickListener.onItemClick(v, getAdapterPosition());
-        }
-    }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
-        return new ViewHolder(view,onItemClickListener);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        return new ViewHolder(view, onItemClickListener);
     }
 
     @SuppressLint({"SetTextI18n", "CheckResult"})
@@ -101,7 +63,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         holder.progressBar.setVisibility(View.GONE);
                         //requestOptions.centerCrop();
-                    return false;
+                        return false;
                     }
 
                     @Override
@@ -119,20 +81,54 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         holder.source.setText(model.getSource().getName());
 
         holder.time.setText("\u2022" + Utils.DateToTimeFormat(model.getPublishedAt()));
-
-        holder.published_ad.setText(model.getPublishedAt());
-        if(model.getAuthor() == null){
-
+        holder.published_at.setText(model.getPublishedAt());
+        if (model.getAuthor() == null) {
             holder.author.setText(" ");
+        } else {
+            holder.author.setText("" + model.getAuthor());
         }
-        else{
-            holder.author.setText(""+model.getAuthor());
-        }
+    }
+
+    public interface OnItemClickListeners {
+        void onItemClick(View view, int position);
     }
 
     @Override
     public int getItemCount() {
         return articles.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView title, desc, author, published_at, source, time;
+        ImageView imageView;
+        ProgressBar progressBar;
+        OnItemClickListeners onItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListeners onItemClickListener) {
+            super(itemView);
+
+            itemView.setOnClickListener(this);
+            title = itemView.findViewById(R.id.title);
+
+            desc = itemView.findViewById(R.id.desc);
+
+            author = itemView.findViewById(R.id.author);
+
+            published_at = itemView.findViewById(R.id.publishedAt);
+
+            source = itemView.findViewById(R.id.source);
+
+            time = itemView.findViewById(R.id.time);
+            imageView = itemView.findViewById(R.id.image);
+            progressBar = itemView.findViewById(R.id.progress_load);
+            this.onItemClickListener = onItemClickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            onItemClickListener.onItemClick(v, getAdapterPosition());
+        }
     }
 
 }
