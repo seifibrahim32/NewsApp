@@ -10,12 +10,13 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom"
-        android:theme="@android:style/Theme.Holo.Light"/>
-    <item
+        android:theme="@android:style/Theme.Holo.Light" />
+
+    <!-- <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:title="@string/settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" /> -->
 
 </menu>

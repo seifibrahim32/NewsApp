@@ -12,9 +12,10 @@ import android.view.MenuItem;
 import androidx.appcompat.widget.SearchView;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
@@ -36,6 +37,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     public static final String API_KEY = "fed9a9dac524473997a33eca63fc120a";
     public List<Article> articles = new ArrayList<>();
@@ -44,21 +46,31 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private RecyclerView.LayoutManager layoutManager;
     private Adapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private RelativeLayout errorLayout;
+    private ImageView errorImage;
+    private TextView errorTitle, errorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
-        textView = findViewById(R.id.top_headlines);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        textView = findViewById(R.id.top_headlines);
         recyclerView = findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
         onLoadingSwipeRefresh("");
+
+        errorLayout = findViewById(R.id.errorLayout);
+        errorImage = findViewById(R.id.errorImage);
+        errorTitle = findViewById(R.id.errorTitle);
+        errorMessage = findViewById(R.id.errorMessage);
     }
 
     @Override
@@ -92,7 +104,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         return true;
     }
 
+    public void showErrorMessage(int imageView, String title, String message) {
+
+        Log.v("Show1Error", message);
+        if (errorLayout.getVisibility() != View.VISIBLE) {
+
+            errorLayout.setVisibility(View.VISIBLE);
+
+
+            errorImage.setImageResource(imageView);
+            errorTitle.setText(title);
+            errorMessage.setText(message);
+
+        }
+    }
+
     public void LoadJson(final String keyword) {
+
+        errorLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         ApiInterface apiInterface = ApiClient.getInstance().create(ApiInterface.class);
         Call<News> call;
@@ -105,31 +134,62 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
                 if (response.isSuccessful() && response.body().getArticles() != null) {
+
                     if (!articles.isEmpty()) {
                         articles.clear();
                     }
+
                     articles = response.body().getArticles();
                     adapter = new Adapter(articles, MainActivity.this);
-                    initListener();
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+
+                    initListener();
+
                     swipeRefreshLayout.setRefreshing(false);
                     textView.setVisibility(View.VISIBLE);
                 } else {
                     textView.setVisibility(View.INVISIBLE);
-                    Toast.makeText(MainActivity.this, "No Results", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+
+                    String errorCode;
+                    switch (response.code()) {
+                        case 404:
+                            errorCode = "404 not found";
+                            break;
+                        case 500:
+                            errorCode = "500 server broken";
+                            break;
+                        default:
+                            errorCode = "unknown error";
+                            break;
+                    }
+
+                    showErrorMessage(
+                            R.mipmap.no_result,
+                            "No Result",
+                            "Please Try Again!\n" +
+                                    errorCode);
+
                 }
             }
 
+
             @Override
             public void onFailure(Call<News> call, Throwable t) {
-
+                Log.v("Error", t.getMessage());
+                textView.setVisibility(View.INVISIBLE);
                 swipeRefreshLayout.setRefreshing(false);
-                Log.v("Error network", t.getMessage());
+                showErrorMessage(
+                        R.mipmap.oops,
+                        "Oops..",
+                        "Network failure, Please Try Again\n" +
+                                t.toString());
             }
         });
 
     }
+
 
     private void initListener() {
         adapter.onItemClickListener = (view, position) -> {
@@ -147,12 +207,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     MainActivity.this, pair);
 
+            startActivity(intent);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 startActivity(intent, optionsCompat.toBundle());
             } else {
                 startActivity(intent);
             }
-
         };
     }
 

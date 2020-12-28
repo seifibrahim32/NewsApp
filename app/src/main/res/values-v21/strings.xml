@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_title">Error Title</string>
+    <string name="error_message">Error Message</string>
+    <string name="retry">Retry</string>
+</resources>

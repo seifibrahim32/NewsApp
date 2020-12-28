@@ -10,4 +10,7 @@
     <string name="a_time_ago">a time ago</string>
     <string name="share">Share</string>
     <string name="open_with_browser">Open with browser</string>
+    <string name="error_title">Error Title</string>
+    <string name="error_message">Error Message</string>
+    <string name="retry">Retry</string>
 </resources>
