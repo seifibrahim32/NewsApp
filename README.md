@@ -41,3 +41,11 @@ implemented initListener() declared for filling the onItemClickListener object i
 - "models" folder : Full of pojo files for ability to retrieve data from JSON file of NewsApi.org.
 - NewsActivity.java : OnClickListener switch to the intent of MainActivity.java from the adapter.
 It shows the WebView and the information of the article as there is a reliability to share the news or open it from a browser.
+
+# Used websites for the app:
+- www.jsonschema2pojo.org
+- RetroFit Documentation
+- Android Documentation
+- NEWSAPI.org
+
+
