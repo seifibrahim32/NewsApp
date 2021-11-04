@@ -2,7 +2,8 @@
 News Application made with Java language and with some networking methods
 to get from the server the information of the news with the author name and the 
 time and its date.
-#How it works.
+
+# How it works.
 The user opens the app with the internet connection to get news list , so 
 the list appears so give the user the ease of clicking on the list for 
 extraction  of bunch of information and many more will be discussed in Features section.
